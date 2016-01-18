@@ -18,7 +18,6 @@ define Package/mtk-linkit
 	+kmod-nls-base +kmod-nls-cp437 +kmod-nls-iso8859-1 \
 	+kmod-nls-iso8859-15 +kmod-nls-iso8859-2 +kmod-nls-utf8 \
 	+kmod-sdhci-mt7620 +kmod-usb-storage \
-	+kmod-video-core +kmod-video-uvc \
 	+kmod-sound-core +kmod-sound-mtk +madplay-alsa +alsa-utils \
 	+mtk-sdk-wifi
 
