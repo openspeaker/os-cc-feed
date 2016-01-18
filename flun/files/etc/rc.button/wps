@@ -1,0 +1,34 @@
+#!/bin/sh
+
+[ "${ACTION}" = "released" -o "${ACTION}" = "timeout" ] || exit 21
+
+. /lib/functions.sh
+
+logger "$BUTTON pressed for $SEEN seconds"
+
+if [ "$SEEN" -gt 20 ]
+then
+	[ -f /tmp/.factory_reset ] && return
+	echo timer > /sys/class/leds/mediatek\:orange\:wifi/trigger
+	echo 100 > /sys/class/leds/mediatek\:orange\:wifi/delay_on
+	echo 100 > /sys/class/leds/mediatek\:orange\:wifi/delay_off
+	touch /tmp/.factory_reset
+	echo "FACTORY RESET" > /dev/console
+	jffs2reset -y
+	sync
+	reboot
+elif [ "$SEEN" -gt 5 ]
+then
+	sta_disabled="$(uci get wireless.sta.disabled)"
+	if [ ! "$sta_disabled" = 1 ]; then
+		echo none > /sys/class/leds/mediatek\:orange\:wifi/trigger
+		echo 1 > /sys/class/leds/mediatek\:orange\:wifi/brightness
+		sleep 1
+		echo "START WIFI AP" > /dev/console
+		uci set wireless.sta.disabled=1
+		uci commit wireless
+		wifi
+	fi
+fi
+
+return 0
